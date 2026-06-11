@@ -467,8 +467,9 @@ const TYPE = {
 }
 
 const workouts = {
-  // Aggiungi le sessioni qui man mano che le fai. Formato: chiave = 'AAAA-MM-GG'
-  // '2026-06-18': { tt:'b', name:'Lento facile', loc:'Parco', km:4.0, pace:"7'05\"/km", hr:148, dur:'28:20', cad:0, elev:0, hasMap:false, note:'...', zones:[ {z:'Z2',pct:90,lbl:'aerobico'} ] }
+  '2026-06-10': { tt:'b', name:'Allenamento 1 - Z2', loc:'', km:4.16, pace:"7'23\"/km", hr:146, dur:'30:44', cad:0, elev:16, hasMap:false,
+    note:'Prima uscita pre-piano. Passo al limite superiore Z2, FC controllata (146 media). FC max 163 ok per chi parte: nelle prossime settimane il cuore impara a lavorare meno per la stessa velocità. Qualche tratto di cammino probabile — li chiudiamo piano piano.',
+    zones:[ {z:'Z2',pct:88,lbl:'aerobico'}, {z:'Z1',pct:12,lbl:'recupero'} ] },
 };
 
 // Recap "Il viaggio" — calcolato dai dati, mai hardcoded (evita drift km/corse)
@@ -500,8 +501,7 @@ const workouts = {
 }());
 
 const splits = {
-  // Aggiungi i parziali km qui. ["num","valore"], true al migliore.
-  // '2026-06-18': [["1","7'15\""],["2","7'05\""],["3","6'58\"",true],["4","7'02\""]]
+  // Splits per km non disponibili da Strava per questa sessione
 };
 
 const ROUTES = {
@@ -513,22 +513,159 @@ const REALMAPS = {};
 const RECORDS = {};
 
 const WEEKS = [
-  // Una voce = una settimana. status: done|current|future|miss
-  { id:'S1', label:'Settimana 1', range:'15–21 giu', phase:'Base', status:'current', km:'0', focus:'Prima settimana: costruire il fiato, tutto lento',
+  // Una voce = una settimana. Struttura: mer (facile) + dom (lungo NON NEGOZIABILE)
+  { id:'S1', label:'Settimana 1', range:'15–21 giu', phase:'Base', status:'current', km:'14',
+    focus:'Prima settimana: costruire il fiato. Tutto conversazionale, zero fretta.',
     sessions:[
-      {n:1, day:'mer', tt:'b', name:'Lento facile', target:'~4 km a Z2', ds:null, km:0,
-        plan:{pace:"6'45\"–7'20\"/km", fc:'Z2 (70-80%)', ideal:'Devi poter parlare a frasi intere. Se ti manca il fiato, rallenta o cammina.', tip:'Conversazionale, non gara. Mattoni, non razzi.'}},
-      {n:2, day:'ven', tt:'b', name:'Lento + camminata', target:'~4 km corsa/cammino', ds:null, km:0,
-        plan:{pace:"6'45\"–7'20\"/km", fc:'Z2 (70-80%)', ideal:'Alterna corsa/camminata se serve. Riduci i tratti di cammino settimana dopo settimana.', tip:'Meglio finire fresco che spompato a metà.'}},
-      {n:3, day:'dom', tt:'key', name:'Lungo', target:'~6 km lento · NON NEGOZIABILE', ds:null, km:0,
-        plan:{pace:"7'00\"–7'20\"/km", fc:'Z2 bassa', ideal:'Il lungo si corre piano. È il mattone che costruisce il motore aerobico.', tip:'Se hai dubbi sul passo, vai più piano. Sempre.'}},
-    ], coach:'Settimana 1: niente fretta. Tieni i lenti davvero lenti (Z2) e chiudi il lungo della domenica. Quello conta.' },
-  { id:'S2', label:'Settimana 2', range:'22–28 giu', phase:'Base', status:'future', km:'0', focus:'',
+      {n:1, day:'mer', tt:'b', name:'Lento facile', target:'~8 km a Z2', ds:null, km:0,
+        plan:{pace:"6'45\"–7'20\"/km", fc:'Z2 (70-80%)', ideal:'Devi poter chiacchierare a frasi intere. Se ti manca il fiato, rallenta o cammina — nessuno ti guarda.', tip:'Lento vero. Se ti sembra troppo piano, è il passo giusto. Mattoni, non razzi.'}},
+      {n:2, day:'dom', tt:'key', name:'Lungo 🔥', target:'~6 km lento · NON NEGOZIABILE', ds:null, km:0,
+        plan:{pace:"7'00\"–7'20\"/km", fc:'Z2 bassa', ideal:'Il lungo si corre piano. Chiudi i tratti di cammino se puoi, ma Z2 sempre.', tip:'Se hai dubbi sul passo, vai più piano. Sempre.'}},
+    ], coach:'Sett.1: mercoledì scalda il motore, domenica lo costruisce. Salta il lungo → settimana non conta. Punto.' },
+
+  { id:'S2', label:'Settimana 2', range:'22–28 giu', phase:'Base', status:'future', km:'16',
+    focus:'Alza leggermente il volume. Stessa logica: tutto Z2, chiudi i tratti di cammino.',
     sessions:[
-      {n:1, day:'mer', tt:'b', name:'Lento facile', target:'', ds:null, km:0},
-      {n:2, day:'ven', tt:'b', name:'Lento facile', target:'', ds:null, km:0},
-      {n:3, day:'dom', tt:'key', name:'Lungo', target:'~7 km · NON NEGOZIABILE', ds:null, km:0},
-    ], coach:'' },
+      {n:1, day:'mer', tt:'b', name:'Lento facile', target:'~9 km a Z2', ds:null, km:0,
+        plan:{pace:"6'45\"–7'20\"/km", fc:'Z2 (70-80%)', ideal:'Passo conversazionale. Se la settimana scorsa hai camminato qualche tratto, questa prova a ridurlo.', tip:'Non accelerare perché ti senti bene. Il sistema aerobico si costruisce lento.'}},
+      {n:2, day:'dom', tt:'key', name:'Lungo 🔥', target:'~7 km lento · NON NEGOZIABILE', ds:null, km:0,
+        plan:{pace:"7'00\"–7'20\"/km", fc:'Z2 bassa', ideal:'+1km rispetto alla sett.1. Stesso passo, più mattoni.', tip:'Lungo = mai in fretta. Se sali di passo sei in Z3 e stai sbagliando.'}},
+    ], coach:'Sett.2: +1km sul lungo. Il mercoledì deve essere genuinamente facile per arrivarci con le gambe.' },
+
+  { id:'S3', label:'Settimana 3', range:'29 giu–5 lug', phase:'Base', status:'future', km:'18',
+    focus:'Consolida il volume. Nessuna sessione intensa — ancora tutto in costruzione.',
+    sessions:[
+      {n:1, day:'mer', tt:'b', name:'Lento facile', target:'~10 km a Z2', ds:null, km:0,
+        plan:{pace:"6'45\"–7'20\"/km", fc:'Z2 (70-80%)', ideal:'10km a Z2 conversazionale. Il tuo sistema cardiovascolare sta costruendo nuovi capillari: ogni km lento è un investimento.', tip:'Noia = segno che stai in Z2. È un complimento.'}},
+      {n:2, day:'dom', tt:'key', name:'Lungo 🔥', target:'~8 km lento · NON NEGOZIABILE', ds:null, km:0,
+        plan:{pace:"7'00\"–7'20\"/km", fc:'Z2 bassa', ideal:'Il lungo cresce di 1km. Tieni il passo basso anche se ti senti bene — soprattutto se ti senti bene.', tip:'Dopo 6km senti che le gambe vanno da sole? È il glicogeno che finisce e il grasso che subentra. È esattamente quello che vogliamo.'}},
+    ], coach:'Sett.3: 10km sul facile è già un bel mercoledì. Il lungo a 8km inizia a costruire resistenza vera.' },
+
+  { id:'S4', label:'Settimana 4', range:'6–12 lug', phase:'Base', status:'future', km:'20',
+    focus:'Primo picco Base. Il volume sale — recupero tra le sessioni è sacro.',
+    sessions:[
+      {n:1, day:'mer', tt:'b', name:'Lento facile', target:'~11 km a Z2', ds:null, km:0,
+        plan:{pace:"6'45\"–7'20\"/km", fc:'Z2 (70-80%)', ideal:'11km sempre conversazionale. Se il giorno dopo hai le gambe pesanti, il passo del mercoledì era troppo alto.', tip:'La palestra dei giorni adiacenti conta: non accumulare fatica in entrambe le direzioni.'}},
+      {n:2, day:'dom', tt:'key', name:'Lungo 🔥', target:'~9 km lento · NON NEGOZIABILE', ds:null, km:0,
+        plan:{pace:"7'00\"–7'20\"/km", fc:'Z2 bassa', ideal:'9km. Stai costruendo la capacità di reggere la distanza — è lo scopo di tutta la fase Base.', tip:'Non guardare il passo dopo il 7mo km se ti senti bene. Guarda la FC: se sale, rallenta.'}},
+    ], coach:'Sett.4: picco della fase Base. 20km totali è un volume rispettabile. Recovery tra le sessioni = sacro.' },
+
+  { id:'S5', label:'Settimana 5', range:'13–19 lug', phase:'Base', status:'future', km:'18',
+    focus:'Settimana di scarico Base. Calo volume ~10%, gambe fresche per la fase Build.',
+    sessions:[
+      {n:1, day:'mer', tt:'b', name:'Lento facile', target:'~10 km a Z2', ds:null, km:0,
+        plan:{pace:"6'45\"–7'20\"/km", fc:'Z2 (70-80%)', ideal:'Settimana di scarico: lievemente meno volume, stessa qualità. Le gambe devono arrivare fresche alla Build.', tip:'Non farti venire la voglia di "recuperare" i km mancanti. Lo scarico è allenamento.'}},
+      {n:2, day:'dom', tt:'key', name:'Lungo 🔥', target:'~8 km lento · NON NEGOZIABILE', ds:null, km:0,
+        plan:{pace:"7'00\"–7'20\"/km", fc:'Z2 bassa', ideal:'Scarico: -1km rispetto al picco. Gambe fresche, testa pronta per la Build.', tip:'Fine fase Base: hai il motore aerobico. Adesso arriva il carburante premium.'}},
+    ], coach:'Sett.5: scarico. Non è una settimana buttata — è quando il corpo assorbe tutto il lavoro delle 4 sett. precedenti.' },
+
+  { id:'S6', label:'Settimana 6', range:'20–26 lug', phase:'Build', status:'future', km:'22',
+    focus:'FASE BUILD: entra la qualità. Mercoledì diventa un progressivo con tratti a ritmo gara.',
+    sessions:[
+      {n:1, day:'mer', tt:'a', name:'Progressivo', target:'10 km · ultimi 3 km a 6\'00\"–6\'20\"/km', ds:null, km:0,
+        plan:{pace:"start 7'00\" → fine 6'00\"", fc:'Z2→Z3', ideal:'Parti lento (Z2), alza il ritmo ogni 2km. Gli ultimi 3km devono sembrare impegnativi ma gestibili.', tip:'Il progressivo insegna al corpo a reggere ritmi più veloci con la fatica già accumulata. È il "dress rehearsal" della gara.'}},
+      {n:2, day:'dom', tt:'key', name:'Lungo 🔥', target:'~12 km lento · NON NEGOZIABILE', ds:null, km:0,
+        plan:{pace:"6'55\"–7'15\"/km", fc:'Z2 bassa-media', ideal:'Lungo in Build: cresce. Tutto Z2, anche se il mercoledì è stato duro.', tip:'Mercol duro + dom lungo = serve dormire e mangiare bene. Glicogeno, non magia.'}},
+    ], coach:'Sett.6: benvenuto in Build. Il progressivo del mercoledì è nuovo — va bene se gli ultimi km fanno un po\' schifo, è il punto.' },
+
+  { id:'S7', label:'Settimana 7', range:'27 lug–2 ago', phase:'Build', status:'future', km:'24',
+    focus:'Primo lavoro di qualità strutturato. 4×2km con recupero tra le ripetute.',
+    sessions:[
+      {n:1, day:'mer', tt:'a', name:'Ripetute 4×2km', target:'4 rip. da 2km a 6\'00\"/km · rec 90s camminata', ds:null, km:0,
+        plan:{pace:"6'00\"–6'10\"/km per rip.", fc:'Z3-Z4', ideal:'4 blocchi da 2km con recupero camminata. L\'obiettivo è costanza: tutti e 4 i blocchi allo stesso passo, non sprint+morte.', tip:'Il recupero è parte dell\'allenamento. 90 secondi, poi riparti anche se non sei al 100%.'}},
+      {n:2, day:'dom', tt:'key', name:'Lungo 🔥', target:'~12 km lento · NON NEGOZIABILE', ds:null, km:0,
+        plan:{pace:"6'55\"–7'15\"/km", fc:'Z2', ideal:'Dopo le ripetute del mercoledì le gambe protestano: ignorale e tieni il passo Z2.', tip:'Il lungo post-ripetute è la combo più potente del piano. Il corpo si adatta alla fatica composta.'}},
+    ], coach:'Sett.7: prime ripetute serie. Costanza > velocità massima. Se le ultime 2 rip. vanno forte quanto le prime, hai vinto.' },
+
+  { id:'S8', label:'Settimana 8', range:'3–9 ago', phase:'Build', status:'future', km:'26',
+    focus:'Volume Build in crescita. Ripetute più lunghe, lungo che avanza.',
+    sessions:[
+      {n:1, day:'mer', tt:'a', name:'Ripetute 3×3km', target:'3 rip. da 3km a 6\'00\"–6\'10\"/km · rec 2min', ds:null, km:0,
+        plan:{pace:"6'00\"–6'10\"/km", fc:'Z3-Z4', ideal:'Blocchi più lunghi: 3km è la soglia dove il ritmo gara inizia a fare male. Perfetto.', tip:'Se al 2km della terza ripetuta vuoi rallentare: non farlo. Quella è la finestra di adattamento.'}},
+      {n:2, day:'dom', tt:'key', name:'Lungo 🔥', target:'~14 km lento · NON NEGOZIABILE', ds:null, km:0,
+        plan:{pace:"6'55\"–7'15\"/km", fc:'Z2', ideal:'14km: inizi a sentire cosa significa reggere la distanza. Niente Z3, niente eroismi.', tip:'Se a metà lungo senti le gambe OK e acceleri, stai sbagliando. Goditi i mattoni.'}},
+    ], coach:'Sett.8: 14km sul lungo è un milestone. Il tuo motore aerobico sta diventando un motore vero.' },
+
+  { id:'S9', label:'Settimana 9', range:'10–16 ago', phase:'Build', status:'future', km:'28',
+    focus:'Picco Build. Massimo volume della fase — poi scarico.',
+    sessions:[
+      {n:1, day:'mer', tt:'a', name:'Ripetute 5×1km', target:'5 rip. da 1km a 5\'45\"–5\'55\"/km · rec 90s', ds:null, km:0,
+        plan:{pace:"5'45\"–5'55\"/km", fc:'Z4', ideal:'Ritmo gara vero su distanze corte. Il corpo impara il passo target 5\'40\"/km in condizioni controllate.', tip:'5 km di lavoro a ritmo gara + 28 totali = settimana pesante. Sonno e proteine dopo.'}},
+      {n:2, day:'dom', tt:'key', name:'Lungo 🔥', target:'~15 km lento · NON NEGOZIABILE', ds:null, km:0,
+        plan:{pace:"6'55\"–7'10\"/km", fc:'Z2', ideal:'15km: tre quarti di mezza. Tieni Z2 anche nelle ultime salite.', tip:'Se finisci il lungo e non riesci a parlare, sei andato troppo forte. Regola dura.'}},
+    ], coach:'Sett.9: 15km sul lungo è il picco Build. Da qui sai che la mezza non è fantascienza.' },
+
+  { id:'S10', label:'Settimana 10', range:'17–23 ago', phase:'Build', status:'future', km:'22',
+    focus:'Scarico Build. Calo volume ~20%, gambe fresche per la fase Specifico.',
+    sessions:[
+      {n:1, day:'mer', tt:'b', name:'Lento + strides', target:'10 km Z2 + 4×100m veloci', ds:null, km:0,
+        plan:{pace:"6'45\"–7'20\"/km + strides a 5'00\"", fc:'Z2 poi picchi Z5', ideal:'Settimana scarico: volume basso ma 4 strides (100m veloci) per tenere la reattività neuromuscolare.', tip:'Gli strides non stancano se fatti bene: 100m al 90%, recupero camminata, gambe sveglie.'}},
+      {n:2, day:'dom', tt:'key', name:'Lungo 🔥', target:'~12 km lento · NON NEGOZIABILE', ds:null, km:0,
+        plan:{pace:"6'55\"–7'15\"/km", fc:'Z2', ideal:'Scarico: lungo ridotto ma non saltato mai. Gambe fresche, testa pronta.', tip:'Fine Build: hai le ripetute nelle gambe. Adesso la Specifico le mette a regime gara.'}},
+    ], coach:'Sett.10: scarico Build. Il corpo assorbe 5 settimane di lavoro duro. Non aggiungere km "perché ti senti bene".' },
+
+  { id:'S11', label:'Settimana 11', range:'24–30 ago', phase:'Specifico', status:'future', km:'28',
+    focus:'FASE SPECIFICO: il lungo diventa un lavoro. Tratti a ritmo gara dentro il lungo.',
+    sessions:[
+      {n:1, day:'mer', tt:'a', name:'Medio 8km', target:'8 km a 6\'00\"–6\'20\"/km', ds:null, km:0,
+        plan:{pace:"6'00\"–6'20\"/km", fc:'Z3', ideal:'8km al ritmo medio: non gara, ma vicino. Il corpo impara a reggere il ritmo per distanze lunghe.', tip:'Il medio è la sessione che più trasferisce alla gara. Rispettalo.'}},
+      {n:2, day:'dom', tt:'key', name:'Lungo Progressivo 🔥', target:'~16 km · ultimi 4 km a 5\'50\"–6\'00\" · NON NEGOZIABILE', ds:null, km:0,
+        plan:{pace:"start 7'00\" → ultimi 4km 5'50\"–6'00\"", fc:'Z2→Z3', ideal:'Lungo progressivo: parti piano, chiudi a ritmo gara. Il cuore dei lunghi Specifico.', tip:'I primissimi km devono sembrarti lentissimi. È deliberato: arrivi fresco alla parte veloce.'}},
+    ], coach:'Sett.11: il lungo non è più solo volume — ha un obiettivo di ritmo. Questa è la fase dove si forgia il sub-2h.' },
+
+  { id:'S12', label:'Settimana 12', range:'31 ago–6 set', phase:'Specifico', status:'future', km:'30',
+    focus:'Volume Specifico in crescita. Ripetute lunghe, lungo con tratti a ritmo gara.',
+    sessions:[
+      {n:1, day:'mer', tt:'a', name:'Ripetute 2×5km', target:'2 rip. da 5km a 5\'50\"–6\'00\"/km · rec 3min', ds:null, km:0,
+        plan:{pace:"5'50\"–6'00\"/km", fc:'Z3-Z4', ideal:'Due blocchi da 5km a ritmo gara. È difficile, è il punto. Il secondo blocco ti dirà quanto sei pronto.', tip:'Se il secondo 5km va uguale al primo, sei in forma. Se crolla di 20+ secondi, gestisci meglio il primo.'}},
+      {n:2, day:'dom', tt:'key', name:'Lungo Progressivo 🔥', target:'~17 km · ultimi 5 km a ritmo gara · NON NEGOZIABILE', ds:null, km:0,
+        plan:{pace:"start 7'00\" → ultimi 5km 5'40\"–5'55\"", fc:'Z2→Z3', ideal:'17km con finale a ritmo gara: la simulazione più vicina alla mezza che farai.', tip:'Porta gel o date: 17km senza carburante è stupido. Pratica anche la strategia nutrizionale.'}},
+    ], coach:'Sett.12: 2×5km a ritmo gara è roba seria. Stai correndo quasi a passo gara per 10km — il sub-2h inizia a sembrare reale.' },
+
+  { id:'S13', label:'Settimana 13', range:'7–13 set', phase:'Specifico', status:'future', km:'32',
+    focus:'Picco Specifico. La settimana più dura del piano — poi si scarica tutto.',
+    sessions:[
+      {n:1, day:'mer', tt:'a', name:'Ripetute 3×4km', target:'3 rip. da 4km a 5\'45\"/km · rec 3min', ds:null, km:0,
+        plan:{pace:"5'45\"–5'55\"/km", fc:'Z4', ideal:'12km di lavoro a ritmo gara in blocchi. È la sessione più dura del piano — sopravvivi e cresci.', tip:'Riscaldamento di almeno 2km prima. Defaticamento di 2km dopo. Non saltarli.'}},
+      {n:2, day:'dom', tt:'key', name:'Lungo Progressivo 🔥', target:'~18 km · ultimi 6 km a ritmo gara · NON NEGOZIABILE', ds:null, km:0,
+        plan:{pace:"start 7'00\" → ultimi 6km 5'40\"–5'50\"", fc:'Z2→Z3-Z4', ideal:'18km progressivo: il più lungo dell\'intero piano. Parti pianissimo.', tip:'Questo lungo è la mezza che provi prima della mezza. Se lo chiudi bene, la gara è tua.'}},
+    ], coach:'Sett.13: il picco. Dormici sopra, mangia bene, taglia il superfluo. Poi scarico e gara.' },
+
+  { id:'S14', label:'Settimana 14', range:'14–20 set', phase:'Specifico', status:'future', km:'26',
+    focus:'Scarico Specifico. Volume -20%, mantieni l\'intensità. Gambe che ricordano.',
+    sessions:[
+      {n:1, day:'mer', tt:'a', name:'Ripetute 4×1km', target:'4 rip. da 1km a 5\'40\"/km · rec 90s', ds:null, km:0,
+        plan:{pace:"5'40\"–5'50\"/km", fc:'Z4', ideal:'Scarico ma con qualità: 4 ripetute brevi a passo gara reale. Il corpo deve ricordare il ritmo.', tip:'Scarico ≠ settimana di riposo. Volume giù, intensità resta.'}},
+      {n:2, day:'dom', tt:'key', name:'Lungo 🔥', target:'~14 km · ultimi 3 km a ritmo gara · NON NEGOZIABILE', ds:null, km:0,
+        plan:{pace:"start 7'00\" → fine 5'45\"–5'55\"", fc:'Z2→Z3', ideal:'Lungo ridotto con finale a ritmo gara. Gambe fresche per il Taper.', tip:'Fine Specifico: hai costruito tutto quello che serve. Il Taper fa il resto.'}},
+    ], coach:'Sett.14: scarico. Il corpo assorbe 4 settimane di lavoro duro. Non aggiungere niente "per sicurezza".' },
+
+  { id:'S15', label:'Settimana 15', range:'21–27 set', phase:'Taper', status:'future', km:'20',
+    focus:'TAPER: inizia il calo volume. Mantieni le gambe sveglie, non stressare.',
+    sessions:[
+      {n:1, day:'mer', tt:'b', name:'Lento + strides', target:'10 km Z2 + 6×100m veloci', ds:null, km:0,
+        plan:{pace:"6'45\"–7'20\"/km + strides 5'00\"", fc:'Z2 + picchi', ideal:'Volume basso, gambe reattive. Gli strides tengono il sistema neuromuscolare sveglio senza accumulare fatica.', tip:'Non hai bisogno di allenamento. Hai bisogno di recupero e gambe fresche.'}},
+      {n:2, day:'dom', tt:'key', name:'Lungo 🔥', target:'~10 km lento · NON NEGOZIABILE', ds:null, km:0,
+        plan:{pace:"6'55\"–7'10\"/km", fc:'Z2', ideal:'Lungo corto Taper. 10km facili: gambe che ricordano come girare senza stressarle.', tip:'Taper anxiety è reale: ti senti "non pronto" perché non ti alleni abbastanza. Ignorala.'}},
+    ], coach:'Sett.15: il Taper inizia. L\'allenamento è finito — adesso si raccoglie. Fidati del lavoro fatto.' },
+
+  { id:'S16', label:'Settimana 16', range:'28 set–4 ott', phase:'Taper', status:'future', km:'14',
+    focus:'Taper profondo. Volume minimo, gambe che caricano energia.',
+    sessions:[
+      {n:1, day:'mer', tt:'b', name:'Lento leggero', target:'7 km a Z2 · puro manutenzione', ds:null, km:0,
+        plan:{pace:"6'45\"–7'20\"/km", fc:'Z2', ideal:'7km facili per tenersi in moto. Il corpo sta caricando glicogeno — lasciaglielo fare.', tip:'Niente extra. Niente "un altro km". Gambe fresche > km in più.'}},
+      {n:2, day:'dom', tt:'key', name:'Lungo corto 🔥', target:'~7 km lento · NON NEGOZIABILE', ds:null, km:0,
+        plan:{pace:"6'55\"–7'10\"/km", fc:'Z2', ideal:'Ultimo lungo prima della gara. Semplice, piacevole, senza forzare niente.', tip:'Domenica dopo corri la mezza. Stamattina: spegni il cervello e vai.'}},
+    ], coach:'Sett.16: manca 1 settimana. Il lavoro è fatto. Dormi, mangia bene, idratati. Il resto è rumore.' },
+
+  { id:'S17', label:'Settimana 17 — Gara', range:'5–11 ott', phase:'Taper', status:'future', km:'10',
+    focus:'SETTIMANA GARA. Lunedì-sabato: riposo quasi totale. Domenica 11: sub-2h.',
+    sessions:[
+      {n:1, day:'mer', tt:'b', name:'Attivazione', target:'4 km facilissimi + 4×100m strides', ds:null, km:0,
+        plan:{pace:"7'00\"+ /km", fc:'Z1-Z2', ideal:'4km di gambe che si svegliano, niente di più. Gli strides tengono le fibre veloci pronte.', tip:'Non correre più di 4km. Non importa quanto ti senti bene. GAMBE FRESCHE.'}},
+      {n:2, day:'dom', tt:'key', name:'🏁 MEZZA MARATONA — sub-2h', target:'21,1 km · passo ~5\'40\"/km · 11 OTTOBRE 2026', ds:null, km:0,
+        plan:{pace:"5'35\"–5'45\"/km", fc:'Z3-Z4', ideal:'Parti controllato: i primi 5km devono sembrarti quasi facili. Chi parte forte muore al 15°. Disciplina = medaglia.', tip:'Strategia: 0-5km a 5\'50\", 5-15km a 5\'40\", 15-21km: dai tutto. Negative split o almeno flat.'}},
+    ], coach:'Settimana gara: lunedì-sabato è recovery, idratazione, carboidrati. Domenica è il giorno che hai costruito mattone per mattone da giugno.' },
 ];
 
 let wkIdx = WEEKS.findIndex(w=>w.status==='current');
@@ -1055,7 +1192,7 @@ function smoothPath(pts){
 
 // ===== CALENDARIO (mag + giu) =====
 function buildCal(){
-  const months = [ {y:2026,m:4,name:'maggio 2026'}, {y:2026,m:5,name:'giugno 2026'} ];
+  const months = [ {y:2026,m:5,name:'giugno 2026'}, {y:2026,m:6,name:'luglio 2026'} ];
   const todayStr = (function(){var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');})();
   let html = '<div class="cal-dows">'+['L','M','M','G','V','S','D'].map(d=>`<div class="cal-dow">${d}</div>`).join('')+'</div>';
   months.forEach(mo=>{
